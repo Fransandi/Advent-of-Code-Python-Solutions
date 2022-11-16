@@ -9,13 +9,13 @@
 
 import math
 
-# Part One
+### Part One
 def part_one(input):
     decode_transmission(input[0])
     packets = decode_next_packet()
     return calculate_version_sum(packets)
 
-# Part Two
+### Part Two
 def part_two(input):
     decode_transmission(input[0])
     packets = decode_next_packet()
