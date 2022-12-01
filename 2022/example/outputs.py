@@ -1,7 +1,7 @@
 example_outputs = {
     'day1': {
-        'part_one': None,
-        'part_two': None,
+        'part_one': 24000,
+        'part_two': 45000,
     },
     'day2': {
         'part_one': None,
