@@ -10,8 +10,12 @@
 
 ### Part One
 def part_one(input):
-    pass
+    return helper(input[0], 4)
 
 ### Part Two
 def part_two(input):
-    pass
+    return helper(input[0], 14)
+
+def helper(datastream, marker):
+    for i in range(marker, len(datastream)+1):
+        if len(set(datastream[i-marker:i]))==marker: return i
