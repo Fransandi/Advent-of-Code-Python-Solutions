@@ -10,7 +10,9 @@
 
 ### Part One
 def part_one(input):
-    pass
+    grid = [row for row in input]
+
+    print(grid)
 
 ### Part Two
 def part_two(input):
