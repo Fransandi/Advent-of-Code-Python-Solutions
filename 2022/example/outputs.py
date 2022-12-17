@@ -64,8 +64,8 @@ example_outputs = {
         'part_two': 1707,
     },
     'day17': {
-        'part_one': None,
-        'part_two': None,
+        'part_one': 3068,
+        'part_two': 1514285714288,
     },
     'day18': {
         'part_one': None,
