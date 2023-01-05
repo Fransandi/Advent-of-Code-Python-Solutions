@@ -7,68 +7,53 @@
 =========================================
 '''
 
+from sympy import solve, sympify, Symbol
+
 ROOT = 'root'
 HUMN = 'humn'
-UNKNOWN = 'X'
+UNKNOWN = 'x'
 
 ### Part One
 def part_one(input):
     dict = {}
-    for monkey, yells in [line.strip().split(':') for line in input]:
-        dict[monkey] = yells.strip()
+    for monkey, number in [line.strip().split(':') for line in input]:
+        dict[monkey] = number.strip().split()
 
     return decode(ROOT, dict)
 
 ### Part Two
 def part_two(input):
     dict = {}
-    for monkey, yells in [line.strip().split(':') for line in input]:
-        dict[monkey] = yells.strip().split()
-
-    # if monkey == HUMN: dict[HUMN] = [UNKNOWN]
+    for monkey, number in [line.strip().split(':') for line in input]:
+        dict[monkey] = number.strip().split()
+    
     dict[ROOT][1] = '='
-    dict[HUMN] = UNKNOWN
+    dict[HUMN] = [UNKNOWN]
 
-    print('>>> DIC: ', dict)
-    # return build_equation(ROOT, dict)
+    # Build and solve math expression
+    expression = build_expression(ROOT, dict)
+    sympy_eq = sympify('Eq(' + expression[1:-1].replace('=', ',') + ')')
+    return solve(sympy_eq, Symbol(UNKNOWN))[0]
 
 
 def decode(monkey, dict):
-    yell = dict[monkey]
+    number = dict[monkey] 
 
-    if yell.isnumeric(): dict[monkey] = int(yell)
-    else:
-        n1, operation, n2 = yell.split()
-        decoded_n1 = decode(n1, dict)
-        decoded_n2 = decode(n2, dict)
-        dict[monkey] = int(eval(str(decoded_n1) + operation + str(decoded_n2)))
+    # Base case: monkey yells a specific number
+    if len(number)==1: return int(number[0])
     
-    return dict[monkey]
+    # Calculate number from math expression
+    return int(eval(str(decode(number[0], dict)) + number[1] + str(decode(number[2], dict))))
 
-def build_equation(monkey, dict):
-    yell = dict[monkey]
-    print('Yell:', yell)
+def build_expression(monkey, dict):
+    number = dict[monkey]
 
+    # Base case: monkey yells a specific number
+    if len(number)==1: return number[0]
 
+    # Calculate number from math expression
+    num1 = build_expression(number[0], dict)
+    num2 = build_expression(number[2], dict)
+    operation = number[1]
     
-    if yell.isnumeric(): dict[monkey] = int(yell)
-
-
-
-    return dict[monkey]
-
-
-    if yell.isnumeric(): dict[monkey] = int(yell)
-    elif yell == UNKNOWN or UNKNOWN in yell:
-        return UNKNOWN
-    else:
-        n1, operation, n2 = yell.split()
-        decoded_n1 = decode2(n1, dict)
-        decoded_n2 = decode2(n2, dict)
-
-        print('decoded_n1', decoded_n1)
-        print('decoded_n2', decoded_n2)
-        if UNKNOWN not in decoded_n1 and UNKNOWN not in decoded_n2:
-            dict[monkey] = int(eval(str(decoded_n1) + operation + str(decoded_n2)))
-    
-    return dict[monkey]
+    return '(' + num1 + operation + num2 + ')'
