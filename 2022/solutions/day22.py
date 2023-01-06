@@ -10,33 +10,24 @@
 SPACE = '.'
 VOID = ' '
 WALL = '#'
-
 RIGHT = 0
 DOWN = 1
 LEFT = 2
 UP = 3
+SAMPLE_INPUT = None
+IS_3D = None
 
 ### Part One
 def part_one(input):
     board, instructions = parse_input(input)
-    i, j, direction = 0, board[0].index(SPACE), RIGHT
-    while instructions:
-        next_move = instructions.pop(0)
-
-        if isinstance(next_move, int):
-            if direction == RIGHT: i, j = move_right(board, i, j, next_move)
-            if direction == DOWN:  i, j = move_down(board, i, j, next_move)
-            if direction == LEFT:  i, j = move_left(board, i, j, next_move)
-            if direction == UP:    i, j = move_up(board, i, j, next_move)
-        else:
-            if next_move == 'R': direction = 0 if direction == 3 else direction+1
-            if next_move == 'L': direction = 3 if direction == 0 else direction-1
-
-    return 1000*(i+1) + 4*(j+1) + direction
+    set_config(board)
+    return simulate(board, instructions)
 
 ### Part Two
 def part_two(input):
-    pass
+    board, instructions = parse_input(input)
+    set_config(board, is_3d=True)
+    return simulate(board, instructions)
 
 
 def parse_input(input):
@@ -63,38 +54,107 @@ def parse_input(input):
 
     return board, instructions
 
-def move_right(board, i, j, n):
-    wrap_j = 0
-    while board[i][wrap_j] == VOID: wrap_j+=1
-    for _ in range(n):
-        next_j = wrap_j if j==len(board[i])-1 or board[i][j+1] == VOID else j+1
-        if board[i][next_j] == WALL: break
-        j = next_j
-    return i, j
+def set_config(board, is_3d=False):
+    global SAMPLE_INPUT
+    global IS_3D
+    SAMPLE_INPUT = len(board)<200
+    IS_3D = is_3d
 
-def move_down(board, i, j, n):
-    wrap_i = 0
-    while board[wrap_i][j] == VOID: wrap_i+=1
-    for _ in range(n):
-        next_i = wrap_i if i==len(board)-1 or board[i+1][j] == VOID else i+1
-        if board[next_i][j] == WALL: break
-        i = next_i
-    return i, j
+def simulate(board, instructions):
+    i, j, direction = 0, board[0].index(SPACE), RIGHT
+    for instruction in instructions:
+        if isinstance(instruction, int):
+            i, j, direction = move(board, instruction, i, j, direction)
+        else:
+            if instruction == 'R': direction = 0 if direction == 3 else direction+1
+            if instruction == 'L': direction = 3 if direction == 0 else direction-1
 
-def move_left(board, i, j, n):
-    wrap_j = len(board[0])-1
-    while board[i][wrap_j] == VOID: wrap_j-=1
-    for _ in range(n):
-        next_j = wrap_j if j==0 or board[i][j-1] == VOID else j-1
-        if board[i][next_j] == WALL: break
-        j = next_j
-    return i, j
+    return 1000*(i+1) + 4*(j+1) + direction
 
-def move_up(board, i, j, n):
-    wrap_i = len(board)-1
-    while board[wrap_i][j] == VOID: wrap_i-=1
-    for _ in range(n):
-        next_i = wrap_i if i==0 or board[i-1][j] == VOID else i-1
-        if board[next_i][j] == WALL: break
-        i = next_i
-    return i, j
+def move(board, n, i, j, direction):
+    for step in range(n):
+        if outside_bounds(board, i, j, direction):
+            next_i, next_j, next_direction = wrap(board, i, j, direction)
+            if board[next_i][next_j] == WALL: break
+            return move(board, n-step-1, next_i, next_j, next_direction)
+        else: 
+            if direction == RIGHT: next_i, next_j = i, j+1
+            if direction == LEFT:  next_i, next_j = i, j-1
+            if direction == DOWN:  next_i, next_j = i+1, j
+            if direction == UP:    next_i, next_j = i-1, j
+
+            if board[next_i][next_j] == WALL: break
+
+            if direction in { RIGHT, LEFT }: j = next_j
+            if direction in { DOWN, UP }:    i = next_i
+    
+    return i, j, direction
+
+def outside_bounds(board, i, j, direction):
+    if direction == RIGHT: return j==len(board[i])-1 or board[i][j+1] == VOID
+    if direction == LEFT:  return j==0               or board[i][j-1] == VOID
+    if direction == DOWN:  return i==len(board)-1    or board[i+1][j] == VOID
+    if direction == UP:    return i==0               or board[i-1][j] == VOID
+
+def wrap(board, i, j, direction):
+    if IS_3D: 
+        if SAMPLE_INPUT: return wrap_3d_sample_cube(i, j, direction)
+        else: return wrap_3d_real_cube(i, j, direction)
+    else:
+        return wrap_flat_cube(board, i, j, direction)
+
+def wrap_flat_cube(board, i, j, direction):
+    if direction == RIGHT:
+        j = 0
+        while board[i][j] == VOID: j+=1
+    if direction == LEFT:
+        j = len(board[0])-1
+        while board[i][j] == VOID: j-=1
+    if direction == DOWN:
+        i = 0
+        while board[i][j] == VOID: i+=1
+    if direction == UP:
+        i = len(board)-1
+        while board[i][j] == VOID: i-=1
+
+    return (i, j, direction)
+
+def wrap_3d_sample_cube(i, j, direction):
+    if direction == RIGHT:
+        if 0 <= i <=  3:  return (11-i, 15, LEFT)
+        if 4 <= i <=  7:  return (8, 15-(i-4), DOWN)
+        if 8 <= i <= 11: return (3-(i-8), 11, LEFT)
+    if direction == LEFT:
+        if 0 <= i <=  3: return (4, i+4, DOWN)
+        if 4 <= i <=  7: return (11, 15-(4-i), UP)
+        if 8 <= i <= 11: return (7, 7-(8-i), UP)
+    if direction == UP:
+        if  0 <= j <=  3: return (0, 11-j, DOWN)
+        if  4 <= j <=  7: return (j-4, 8, RIGHT)
+        if  8 <= j <= 11: return (4, 11-j, DOWN)
+        if 12 <= j <= 15: return (7-(12-j), 11, LEFT)
+    if direction == DOWN:
+        if  0 <= j <=  3: return (11, 11-j, UP)
+        if  4 <= j <=  7: return (11-(j-4), 8, RIGHT)
+        if  8 <= j <= 11: return (7, 3-(j-8), UP)
+        if 12 <= j <= 15: return (7-(j-12), 0, RIGHT)
+
+def wrap_3d_real_cube(i, j, direction):
+    if direction == RIGHT:
+        if    0 <= i <=  49: return (149-i, 99, LEFT)
+        if   50 <= i <=  99: return (49, 100+(i-50), UP)
+        if  100 <= i <= 149: return (49-(i-100), 149, LEFT)
+        if  150 <= i <= 199: return (149, 50+(i-150), UP)
+    if direction == LEFT:
+        if    0 <= i <=  49: return (149-i, 0, RIGHT)
+        if   50 <= i <=  99: return (100, i-50, DOWN)
+        if  100 <= i <= 149: return (49-(i-100), 50, RIGHT)
+        if  150 <= i <= 199: return (0, 50+(i-150), DOWN)
+    if direction == UP:
+        if    0 <= j <=  49: return (50+j, 50, RIGHT)
+        if   50 <= j <=  99: return (150+(j-50), 0, RIGHT)
+        if  100 <= j <= 149: return (199, j-100, UP)
+    if direction == DOWN:
+        if    0 <= j <=  49: return (0, 100+j, DOWN)
+        if   50 <= j <=  99: return (150+(j-50), 49, LEFT)
+        if  100 <= j <= 149: return (50+(j-100), 99, LEFT)
