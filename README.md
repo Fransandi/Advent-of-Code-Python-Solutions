@@ -4,9 +4,10 @@
 
 ## About this repository
 
-This repository contains my Advent of Code puzzles solutions using *python3*. Currently, it only has the answers to the 2021 puzzles; I will publish my 2022 solutions when available.
+This repository contains my Advent of Code puzzles solutions using *python3*. Currently, it contains the answers to the 2021 and 2022 puzzles. I will publish more when available.
 
-<img src="https://i.ibb.co/d0NQVqK/2021-stars.jpg" alt="drawing" width="100"/>
+<img src="https://i.ibb.co/kq1WR5F/Screen-Shot-2023-01-06-at-14-01-00.png" alt="drawing" width="100"/>
+
 
 👉 Check the article I wrote about my experience with the challenge: [How To Save Christmas by Coding: Advent of Code](https://blog.fransandi.com/advent-of-code-43b3e5dd3d2d)
 
