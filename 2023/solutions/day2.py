@@ -3,7 +3,7 @@
 || 🎄 Advent of Code 2023: Day 2 🗓
 || Link: https://adventofcode.com/2023
 || Template by: @fransandi
-|| Solution by: ...
+|| Solution by: @fransandi
 =========================================
 '''
 
