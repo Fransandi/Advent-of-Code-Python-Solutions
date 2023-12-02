@@ -20,7 +20,7 @@ def part_one(input):
         cubes = [cube.strip() for cube in line.split(':')[1].replace(';', ',').split(',')]
 
         # Check if all cubes are within the limits
-        if all(int(cube.split()[0]) <= color_limits.get(cube.split()[1], 0) for cube in cubes):
+        if all(int(cube.split()[0]) <= color_limits[cube.split()[1]] for cube in cubes):
             possible += i+1
 
     return possible
