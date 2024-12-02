@@ -2,6 +2,8 @@ import os
 import argparse
 
 # Generate a solution file for each day of the year
+
+
 def generate_solution_file(year, day):
     template = """'''
 =========================================
@@ -31,6 +33,8 @@ def part_two(input):
         f.write(template)
 
 # Generate input files for each day of the year
+
+
 def generate_input_file(year, day):
     dir_name = '{}/inputs'.format(year)
 
@@ -41,6 +45,8 @@ def generate_input_file(year, day):
         pass
 
 # Generate example output file for each day of the year
+
+
 def generate_example_input_file(year, day):
     dir_name = '{}/example/inputs'.format(year)
 
@@ -51,6 +57,8 @@ def generate_example_input_file(year, day):
         pass
 
 # Generate example output files for each day of the year
+
+
 def generate_example_output_file(year):
     template = '''example_outputs = {
     'day1': {
@@ -158,9 +166,12 @@ def generate_example_output_file(year):
     with open('{}/example/outputs.py'.format(year), 'w') as f:
         f.write(template)
 
+
 # Parse command line arguments
-parser = argparse.ArgumentParser(description='Generate Advent of Code template files for a given year.')
-parser.add_argument('year', type=int, help='The year for the Advent of Code event.')
+parser = argparse.ArgumentParser(
+    description='Generate Advent of Code template files for a given year.')
+parser.add_argument(
+    'year', type=int, help='The year for the Advent of Code event.')
 args = parser.parse_args()
 year = args.year
 
