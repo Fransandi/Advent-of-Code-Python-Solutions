@@ -8,11 +8,13 @@
 '''
 
 
-### Part One
+# Part One
 def part_one(input):
-    pass
+    grid = [list(line) for line in input.split()]
 
-### Part Two
+    print(grid)
+
+
+# Part Two
 def part_two(input):
     pass
-    
