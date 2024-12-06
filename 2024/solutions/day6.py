@@ -8,12 +8,12 @@
 '''
 
 
-DIRECTIONS = {
-    'UP': (-1, 0, 'RIGHT'),
-    'RIGHT': (0, 1, 'DOWN'),
-    'DOWN': (1, 0, 'LEFT'),
-    'LEFT': (0, -1, 'UP'),
-}
+DIRECTIONS = {acp
+              'UP': (-1, 0, 'RIGHT'),
+              'RIGHT': (0, 1, 'DOWN'),
+              'DOWN': (1, 0, 'LEFT'),
+              'LEFT': (0, -1, 'UP'),
+              }
 
 
 def parse_input(input):
