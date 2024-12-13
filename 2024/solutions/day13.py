@@ -64,7 +64,7 @@ def part_two(input):
     machines = [(a, b, (t[0] + 10000000000000, t[1] + 10000000000000))
                 for a, b, t in machines]
 
-    # For each machine, we calculate the minimum cost
+    # For each machine, we calculate the minimum cost (brute force no longer suitable)
     cost = 0
     for machine in machines:
         (a_x, a_y), (b_x, b_y), (target_x, target_y) = machine
