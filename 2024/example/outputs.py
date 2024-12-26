@@ -72,8 +72,8 @@ example_outputs = {
         'part_two': '6,1',
     },
     'day19': {
-        'part_one': None,
-        'part_two': None,
+        'part_one': 6,
+        'part_two': 16,
     },
     'day20': {
         'part_one': None,
